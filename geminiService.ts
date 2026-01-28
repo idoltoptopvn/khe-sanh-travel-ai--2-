@@ -5,7 +5,8 @@ import { SYSTEM_INSTRUCTION } from "./constants";
 export class GeminiService {
   private getAI() {
     const apiKey = process.env.API_KEY;
-    if (!apiKey) {
+    if (!apiKey || apiKey === "undefined") {
+      console.error("API Key is missing in environment variables!");
       throw new Error("API_KEY_MISSING");
     }
     return new GoogleGenAI({ apiKey });
@@ -15,16 +16,16 @@ export class GeminiService {
     try {
       const ai = this.getAI();
       
-      // Gemini yêu cầu contents phải bắt đầu bằng lượt của 'user'.
-      // Nếu history có tin nhắn chào mừng của AI ở đầu, ta phải loại bỏ nó khỏi lịch sử gửi đi.
-      const validHistory = history.filter((item, index) => {
-        if (index === 0 && item.role === 'model') return false;
+      // Quy tắc của Gemini: Contents phải bắt đầu bằng lượt của 'user'.
+      // Lời chào mặc định của model ở index 0 trong history cần bị loại bỏ khi gửi lên API.
+      const filteredHistory = history.filter((msg, index) => {
+        if (index === 0 && msg.role === 'model') return false;
         return true;
       });
 
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: [...validHistory, { role: 'user', parts: [{ text: message }] }],
+        contents: [...filteredHistory, { role: 'user', parts: [{ text: message }] }],
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,
           tools: [{ googleSearch: {} }],
@@ -41,4 +42,3 @@ export class GeminiService {
 }
 
 export const geminiService = new GeminiService();
-
