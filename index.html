@@ -25,7 +25,6 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Hiệu ứng hiển thị Markdown chuyên nghiệp */
         .markdown-content strong { color: var(--accent); font-weight: 800; }
         .markdown-content p { margin-bottom: 1rem; line-height: 1.8; word-break: break-word; }
         .markdown-content ul { padding-left: 1.5rem; margin-bottom: 1.2rem; list-style-type: none; }
@@ -46,27 +45,12 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .animate-float { animation: float 4s ease-in-out infinite; }
-
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Tối ưu hóa cho các dòng chữ dài */
-        .break-words {
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            word-break: break-word;
-        }
-
-        /* Shimmer Loading Effect */
         .shimmer {
             background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.05), transparent);
             background-size: 200% 100%;
@@ -76,27 +60,25 @@
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
         }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
     </style>
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
-    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
+    "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
     "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
-    "react-markdown": "https://esm.sh/react-markdown@^9.0.0"
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="overflow-hidden">
     <div id="root"></div>
-<script type="module" src="/index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
