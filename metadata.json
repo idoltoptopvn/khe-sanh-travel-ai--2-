@@ -1,0 +1,9 @@
+{
+  "name": "Khe Sanh Travel AI",
+  "description": "Siêu ứng dụng AI hỗ trợ du lịch Khe Sanh với tính năng tạo video Veo, vẽ tranh 4K và tìm kiếm thời gian thực.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation",
+    "camera"
+  ]
+}
