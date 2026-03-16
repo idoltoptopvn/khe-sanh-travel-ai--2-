@@ -1,40 +1,40 @@
-
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { SYSTEM_INSTRUCTION } from "./constants";
 
 export class GeminiService {
   private getAI() {
-    const apiKey = process.env.API_KEY;
+    // Sử dụng VITE_API_KEY để bảo mật và tương thích với các nền tảng web
+    const apiKey = import.meta.env.VITE_API_KEY;
     if (!apiKey || apiKey === "undefined") {
-      console.error("API Key is missing in environment variables!");
       throw new Error("API_KEY_MISSING");
     }
-    return new GoogleGenAI({ apiKey });
+    return new GoogleGenerativeAI(apiKey);
   }
 
-  async chat(message: string, history: { role: 'user' | 'model'; parts: { text: string }[] }[]) {
+  async chat(message: string, history: any[]) {
     try {
-      const ai = this.getAI();
-      
-      // Quy tắc của Gemini: Contents phải bắt đầu bằng lượt của 'user'.
-      // Lời chào mặc định của model ở index 0 trong history cần bị loại bỏ khi gửi lên API.
+      const genAI = this.getAI();
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash", // Hoặc "gemini-2.0-flash-exp"
+        systemInstruction: SYSTEM_INSTRUCTION 
+      });
+
       const filteredHistory = history.filter((msg, index) => {
         if (index === 0 && msg.role === 'model') return false;
         return true;
       });
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: [...filteredHistory, { role: 'user', parts: [{ text: message }] }],
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
-          tools: [{ googleSearch: {} }],
-          temperature: 0.7,
-        },
+      const chatSession = model.startChat({
+        history: filteredHistory,
+        generationConfig: { temperature: 0.7 }
       });
 
-      return response;
-    } catch (error: any) {
+      const result = await chatSession.sendMessage(message);
+      return {
+        text: result.response.text(),
+        candidates: [{ groundingMetadata: (result.response as any).groundingMetadata }]
+      };
+    } catch (error) {
       console.error("Gemini AI Error:", error);
       throw error;
     }
